@@ -46,6 +46,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             },
+                            modifier = Modifier.padding(horizontal = 8.dp),
                             navigationIcon = {
                                 if (currentRoute == "settings") {
                                     IconButton(onClick = { navController.popBackStack() }) {
