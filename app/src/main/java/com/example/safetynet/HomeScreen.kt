@@ -93,16 +93,27 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Device:", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Device", fontSize = 18.sp, fontWeight = FontWeight.Medium)
                         Text("SafeTrack-001", fontSize = 18.sp)
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Status:", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-                        Text("CONNECTED", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFF4CAF50))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Status", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                        Text(
+                            "CONNECTED",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF4CAF50)
+                        )
                     }
 
 //                    Spacer(modifier = Modifier.height(22.dp))
@@ -114,7 +125,12 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                     )
 
-                    Text("Battery", fontSize = 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(bottom = 8.dp))
+                    Text(
+                        "Battery",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
                     LinearProgressIndicator(
                         progress = 0.65f, // 65% battery level
                         color = Color(0xFF4CAF50),
@@ -141,12 +157,43 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                         .padding(12.dp)
                 ) {
                     Text(
-                        "Latest Event",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
+                        text = "Latest Event",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Normal
                     )
+                    Divider(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .fillMaxWidth(),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Date", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                        Text("17.05.2025", fontSize = 18.sp)
+                    }
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Fall Detected at 14:37\nSeverity: Medium")
+
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Time", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                        Text("17:05", fontSize = 18.sp)
+                    }
+
+                    Divider(
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
+                            .fillMaxWidth(),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                    )
+
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Status", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                        Text("DECLINED", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFF4CAF50))
+                    }
                 }
             }
         }
