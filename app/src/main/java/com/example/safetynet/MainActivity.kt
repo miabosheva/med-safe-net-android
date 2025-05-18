@@ -12,9 +12,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.safetynet.ui.theme.SafetyNetTheme
@@ -32,78 +30,86 @@ class MainActivity : ComponentActivity() {
             SafetyNetTheme {
                 val navController = rememberNavController()
                 var currentScreen by remember { mutableStateOf(Screen.Home) }
+                val currentRoute = currentRoute(navController)
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        val currentRoute = currentRoute(navController)
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    when (currentRoute) {
-                                        "settings" -> "Back"
-                                        else -> currentScreen.name
+                        if (currentRoute == "home" || currentRoute == "history") {
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        when (currentRoute) {
+                                            "settings" -> "Back"
+                                            else -> currentScreen.name
+                                        }
+                                    )
+                                },
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                navigationIcon = {
+                                    if (currentRoute == "settings") {
+                                        IconButton(onClick = { navController.popBackStack() }) {
+                                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                                        }
                                     }
-                                )
-                            },
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            navigationIcon = {
-                                if (currentRoute == "settings") {
-                                    IconButton(onClick = { navController.popBackStack() }) {
-                                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                                },
+                                actions = {
+                                    if (currentRoute != "settings") {
+                                        Button(onClick = {
+                                            navController.navigate("settings")
+                                        }) {
+                                            Text("Settings", color = MaterialTheme.colorScheme.onPrimary)
+                                        }
                                     }
                                 }
-                            },
-                            actions = {
-                                if (currentRoute != "settings") {
-                                    Button(onClick = {
-                                        navController.navigate("settings")
-                                    }) {
-                                        Text("Settings", color = MaterialTheme.colorScheme.onPrimary)
-                                    }
-                                }
-                            }
-                        )
+                            )
+                        }
                     },
                     bottomBar = {
-                        BottomAppBar {
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                BottomNavButton(
-                                    selected = currentScreen == Screen.History,
-                                    onClick = {
-                                        currentScreen = Screen.History
-                                        navController.navigate("history") {
-                                            popUpTo("home") { inclusive = false }
-                                        }
-                                    },
-                                    icon = Icons.Default.FavoriteBorder,
-                                    label = "History",
-                                    modifier = Modifier.weight(1f)
-                                )
-                                BottomNavButton(
-                                    selected = currentScreen == Screen.Home,
-                                    onClick = {
-                                        currentScreen = Screen.Home
-                                        navController.navigate("home") {
-                                            popUpTo("home") { inclusive = true }
-                                        }
-                                    },
-                                    icon = Icons.Outlined.Home,
-                                    label = "Home",
-                                    modifier = Modifier.weight(1f)
-                                )
+                        if (currentRoute == "home" || currentRoute == "history" ) {
+                            BottomAppBar {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    BottomNavButton(
+                                        selected = currentScreen == Screen.History,
+                                        onClick = {
+                                            currentScreen = Screen.History
+                                            navController.navigate("history") {
+                                                popUpTo("home") { inclusive = false }
+                                            }
+                                        },
+                                        icon = Icons.Default.FavoriteBorder,
+                                        label = "History",
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    BottomNavButton(
+                                        selected = currentScreen == Screen.Home,
+                                        onClick = {
+                                            currentScreen = Screen.Home
+                                            navController.navigate("home") {
+                                                popUpTo("home") { inclusive = true }
+                                            }
+                                        },
+                                        icon = Icons.Outlined.Home,
+                                        label = "Home",
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
                             }
                         }
                     }
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "home",
+                        startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable("login") { LoginScreen(navController) }
                         composable("home") { HomeScreen() }
                         composable("history") { HistoryScreen(modifier = Modifier.fillMaxSize()) }
                         composable("settings") { SettingsScreen(navController) }
+                        composable("register") { RegisterScreen(navController) }
+                        composable("login-patient") { LoginPatientScreen(navController) }
+                        composable("register-caretaker") { RegisterCaretaker(navController) }
                     }
                 }
             }
