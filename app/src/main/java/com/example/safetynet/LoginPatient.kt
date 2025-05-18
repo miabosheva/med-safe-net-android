@@ -3,7 +3,6 @@ package com.example.safetynet
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -13,11 +12,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPatientScreen(navController: NavController) {
+fun LoginPatientScreen(homeViewModel: HomeViewModel, navController: NavController) {
     var code by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -82,8 +80,9 @@ fun LoginPatientScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true } // clears login and register
+                    homeViewModel.setUserType(UserTitle.Patient)
+                    navController.navigate(homeViewModel.userTitle.defaultDestination()) {
+                        popUpTo("login") { inclusive = true }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(

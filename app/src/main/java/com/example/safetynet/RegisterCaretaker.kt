@@ -1,6 +1,5 @@
 package com.example.safetynet
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -12,18 +11,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterCaretaker(navController: NavController) {
+fun RegisterCaretaker(homeViewModel: HomeViewModel, navController: NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -109,7 +105,8 @@ fun RegisterCaretaker(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate("home") {
+                    homeViewModel.setUserType(UserTitle.Caretaker)
+                    navController.navigate(homeViewModel.userTitle.defaultDestination()) {
                         popUpTo("login") { inclusive = true }
                     }
                 },
@@ -124,10 +121,6 @@ fun RegisterCaretaker(navController: NavController) {
             ) {
                 Text("Register", fontSize = 20.sp)
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            RegisterLink(navController)
         }
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
 import com.example.safetynet.ui.theme.SafetyNetTheme
 
 enum class Screen {
@@ -22,6 +23,9 @@ enum class Screen {
 }
 
 class MainActivity : ComponentActivity() {
+
+    val homeViewModel: HomeViewModel = HomeViewModel()
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,64 +39,76 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        if (currentRoute == "home" || currentRoute == "history") {
-                            TopAppBar(
-                                title = {
-                                    Text(
-                                        when (currentRoute) {
-                                            "settings" -> "Back"
-                                            else -> currentScreen.name
+                        if (homeViewModel.userTitle == UserTitle.Patient) {
+                            if (currentRoute == "home" || currentRoute == "history") {
+                                TopAppBar(
+                                    title = {
+                                        Text(
+                                            when (currentRoute) {
+                                                "settings" -> "Back"
+                                                else -> currentScreen.name
+                                            }
+                                        )
+                                    },
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    navigationIcon = {
+                                        if (currentRoute == "settings") {
+                                            IconButton(onClick = { navController.popBackStack() }) {
+                                                Icon(
+                                                    Icons.Default.ArrowBack,
+                                                    contentDescription = "Back"
+                                                )
+                                            }
                                         }
-                                    )
-                                },
-                                modifier = Modifier.padding(horizontal = 8.dp),
-                                navigationIcon = {
-                                    if (currentRoute == "settings") {
-                                        IconButton(onClick = { navController.popBackStack() }) {
-                                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                                    },
+                                    actions = {
+                                        if (currentRoute != "settings") {
+                                            Button(onClick = {
+                                                navController.navigate("settings")
+                                            }) {
+                                                Text(
+                                                    "Settings",
+                                                    color = MaterialTheme.colorScheme.onPrimary
+                                                )
+                                            }
                                         }
                                     }
-                                },
-                                actions = {
-                                    if (currentRoute != "settings") {
-                                        Button(onClick = {
-                                            navController.navigate("settings")
-                                        }) {
-                                            Text("Settings", color = MaterialTheme.colorScheme.onPrimary)
-                                        }
-                                    }
-                                }
-                            )
+                                )
+                            }
+                        } else {
+                            Text("List of patients")
                         }
                     },
                     bottomBar = {
-                        if (currentRoute == "home" || currentRoute == "history" ) {
-                            BottomAppBar {
-                                Row(modifier = Modifier.fillMaxWidth()) {
-                                    BottomNavButton(
-                                        selected = currentScreen == Screen.History,
-                                        onClick = {
-                                            currentScreen = Screen.History
-                                            navController.navigate("history") {
-                                                popUpTo("home") { inclusive = false }
-                                            }
-                                        },
-                                        icon = Icons.Default.FavoriteBorder,
-                                        label = "History",
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    BottomNavButton(
-                                        selected = currentScreen == Screen.Home,
-                                        onClick = {
-                                            currentScreen = Screen.Home
-                                            navController.navigate("home") {
-                                                popUpTo("home") { inclusive = true }
-                                            }
-                                        },
-                                        icon = Icons.Outlined.Home,
-                                        label = "Home",
-                                        modifier = Modifier.weight(1f)
-                                    )
+                        if (homeViewModel.userTitle == UserTitle.Patient) {
+                            if (currentRoute == "home" || currentRoute == "history") {
+                                BottomAppBar {
+                                    Row(modifier = Modifier.fillMaxWidth()) {
+                                        BottomNavButton(
+                                            selected = currentScreen == Screen.History,
+                                            onClick = {
+                                                currentScreen = Screen.History
+                                                navController.navigate("history") {
+                                                    popUpTo("home") { inclusive = false }
+                                                }
+                                            },
+                                            icon = Icons.Default.FavoriteBorder,
+                                            label = "History",
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        BottomNavButton(
+                                            selected = currentScreen == Screen.Home,
+                                            onClick = {
+                                                currentScreen = Screen.Home
+                                                navController.navigate("home") {
+                                                    popUpTo("home") { inclusive = true }
+                                                }
+                                            },
+                                            icon = Icons.Outlined.Home,
+                                            label = "Home",
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -107,9 +123,10 @@ class MainActivity : ComponentActivity() {
                         composable("home") { HomeScreen() }
                         composable("history") { HistoryScreen(modifier = Modifier.fillMaxSize()) }
                         composable("settings") { SettingsScreen(navController) }
-                        composable("register") { RegisterScreen(navController) }
-                        composable("login-patient") { LoginPatientScreen(navController) }
-                        composable("register-caretaker") { RegisterCaretaker(navController) }
+                        composable("register") { RegisterScreen(homeViewModel, navController) }
+                        composable("login-patient") { LoginPatientScreen(homeViewModel, navController) }
+                        composable("register-caretaker") { RegisterCaretaker(homeViewModel, navController) }
+                        composable("patient-list") { PatientListScreen(navController) }
                     }
                 }
             }
