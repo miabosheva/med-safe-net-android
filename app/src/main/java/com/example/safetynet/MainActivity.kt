@@ -14,8 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navArgument
 import com.example.safetynet.ui.theme.SafetyNetTheme
 
 enum class Screen {
@@ -39,8 +41,8 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        if (homeViewModel.userTitle == UserTitle.Patient) {
-                            if (currentRoute == "home" || currentRoute == "history") {
+                        if (homeViewModel.userTitle == UserTitle.Patient && (currentRoute == "home" || currentRoute == "history")) {
+
                                 TopAppBar(
                                     title = {
                                         Text(
@@ -74,9 +76,37 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 )
-                            }
-                        } else {
-                            Text("List of patients")
+                        } else if (homeViewModel.userTitle == UserTitle.Caretaker && (currentRoute != "register" && currentRoute != "register-caretaker" && currentRoute != "login" && currentRoute != "login-patient" && currentRoute != "settings" && currentRoute != "patient-detail/{patientId}")) {
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        "List of Patients"
+                                    )
+                                },
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                navigationIcon = {
+                                    if (currentRoute == "settings") {
+                                        IconButton(onClick = { navController.popBackStack() }) {
+                                            Icon(
+                                                Icons.Default.ArrowBack,
+                                                contentDescription = "Back"
+                                            )
+                                        }
+                                    }
+                                },
+                                actions = {
+                                    if (currentRoute != "settings") {
+                                        Button(onClick = {
+                                            navController.navigate("settings")
+                                        }) {
+                                            Text(
+                                                "Settings",
+                                                color = MaterialTheme.colorScheme.onPrimary
+                                            )
+                                        }
+                                    }
+                                }
+                            )
                         }
                     },
                     bottomBar = {
@@ -127,6 +157,13 @@ class MainActivity : ComponentActivity() {
                         composable("login-patient") { LoginPatientScreen(homeViewModel, navController) }
                         composable("register-caretaker") { RegisterCaretaker(homeViewModel, navController) }
                         composable("patient-list") { PatientListScreen(navController) }
+                        composable(
+                            route = "patient-detail/{patientId}",
+                            arguments = listOf(navArgument("patientId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val patientId = backStackEntry.arguments?.getString("patientId")
+                            PatientDetailScreen(patientId = patientId, navController = navController)
+                        }
                     }
                 }
             }

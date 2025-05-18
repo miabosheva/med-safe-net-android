@@ -1,5 +1,5 @@
 package com.example.safetynet
-
+import android.bluetooth.BluetoothClass.Device
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -24,8 +24,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+// ovaa data treba za view
+class HomeScreenData {
+//    var user
+    var heartRate: Int = 90
+    var deviceConnection: DeviceConnection = DeviceConnection.CONNECTED
+//    var event:
+}
+
+enum class DeviceConnection {
+    CONNECTED, NOT_CONNECTED
+}
+
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(homeScreenData: HomeScreenData = HomeScreenData(), modifier: Modifier = Modifier) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val totalHeight = maxHeight
 
@@ -59,7 +71,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Your Heart Rate is", fontSize = 28.sp, fontWeight = FontWeight.Normal)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("82", fontSize = 58.sp, fontWeight = FontWeight.Bold)
+                        Text(homeScreenData.heartRate.toString(), fontSize = 58.sp, fontWeight = FontWeight.Bold)
                         Text("bpm", fontSize = 26.sp, fontWeight = FontWeight.Normal)
                     }
                 }
@@ -109,7 +121,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     ) {
                         Text("Status", fontSize = 18.sp, fontWeight = FontWeight.Medium)
                         Text(
-                            "CONNECTED",
+                            homeScreenData.deviceConnection.toString(),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF4CAF50)
